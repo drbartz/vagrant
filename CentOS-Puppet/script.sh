@@ -48,3 +48,18 @@ ln -s /etc/puppet/git/puppet/modules /etc/puppet/modules
 
 service puppetmaster start
 puppet agent --test --verbose
+
+
+cat > /etc/puppet/git/puppet/.git/config <<__END__
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	url = git@github.com:drbartz/puppet
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+__END__
