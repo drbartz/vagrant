@@ -5,6 +5,7 @@
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
+
 Vagrant.configure(2) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
@@ -12,7 +13,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "nrel/CentOS-6.5-x86_64"
-  config.vm.hostname = "puppet.local"
+  config.vm.hostname = "graphite02.local"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -26,7 +27,7 @@ Vagrant.configure(2) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  config.vm.network "private_network", ip: "10.10.10.2"
+  config.vm.network "private_network", ip: "10.10.10.3"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -62,7 +63,6 @@ Vagrant.configure(2) do |config|
   # automatically installed. For example, configure the host as a
   # policy server and optionally a policy file to run:
   #
-    config.vm.provision "shell", path: "script.sh"
   # config.vm.provision "cfengine" do |cf|
   #   cf.am_policy_hub = true
   #   # cf.run_file = "motd.cf"
@@ -84,6 +84,25 @@ Vagrant.configure(2) do |config|
   #   puppet.manifests_path = "manifests"
   #   puppet.manifest_file  = "default.pp"
   # end
+
+
+$Script = <<__SCRIPT__
+# Add puppet server IP 
+if ! grep -q puppet /etc/hosts
+then 
+	echo "10.10.10.2 puppet" >> /etc/hosts
+fi
+echo HOSTNAME `uname -a`
+__SCRIPT__
+
+  config.vm.provision "shell", inline: $Script
+  
+  config.vm.provision "puppet_server" do |puppet|
+    #puppet.puppet_server = "10.10.10.2"
+    #puppet.puppet_node = "graphite01"
+	 #puppet.options = "--verbose --debug"
+	 puppet.options = "--verbose"
+  end
 
   # Enable provisioning with Chef Solo, specifying a cookbooks path, roles
   # path, and data_bags path (all relative to this Vagrantfile), and adding
