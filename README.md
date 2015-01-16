@@ -33,3 +33,11 @@ You can access at:
 
 Internal IP: 10.10.10.5
 
+# CentOS-Skyline
+Deploy a skyline server from github repo (https://github.com/drbartz/skyline)
+
+You can access at:
+	http://127.0.0.1:8086/
+
+Internal IP: 10.10.10.6
+
