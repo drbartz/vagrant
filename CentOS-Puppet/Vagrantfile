@@ -8,3 +8,4 @@ Vagrant.configure(2) do |config|
 	config.vm.network "private_network", ip: "10.10.10.2"
 	config.vm.provision "shell", path: "script.sh"
 end
+# this Vagrant will generate a CentOS6.5 machine with puppet server installed
