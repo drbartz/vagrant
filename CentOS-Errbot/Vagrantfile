@@ -1,0 +1,29 @@
+# -*- mode: ruby -*-
+
+Vagrant.configure(2) do |config|
+  #config.vm.box = "nrel/CentOS-6.5-x86_64"
+  config.vm.box = "nrel/CentOS-6.5-x86_64"
+  config.vm.hostname = "errbot01"
+
+  config.vm.network "forwarded_port", guest: 80, host: 8088
+  config.vm.network "private_network", ip: "10.10.10.8"
+
+$Script = <<__SCRIPT__
+# Add puppet server IP 
+if ! grep -q puppet /etc/hosts
+then 
+	echo "10.10.10.2 puppet" >> /etc/hosts
+fi
+echo HOSTNAME `uname -a`
+__SCRIPT__
+
+  config.vm.provision "shell", inline: $Script
+  
+  config.vm.provision "puppet_server" do |puppet|
+    #puppet.puppet_server = "10.10.10.2"
+    #puppet.puppet_node = "graphite01"
+	 #puppet.options = "--verbose --debug"
+	 puppet.options = "--verbose"
+  end
+
+end
